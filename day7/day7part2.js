@@ -18,11 +18,8 @@ function intCode(prog, index, inputX) {
             prog[prog[i + 3]] = par1 * par2;
             i += 4;
         } else if (prog[i] == 3) {
-            if (inputX.length == 1) {
-                prog[prog[i + 1]] = inputX[0];
-            } else {
-                prog[prog[i + 1]] = inputX.shift();
-            } i += 2;
+            prog[prog[i + 1]] = inputX.shift();
+            i += 2;
         } else if (opCode == 4) {
             y.push(par1);
             i += 2;
@@ -61,10 +58,9 @@ function intCode(prog, index, inputX) {
 }
 
 const content = fs.readFileSync('day7//input.txt', 'utf8');
-let progCopy = content.split(",").map(a => parseInt(a));
-
+//let progCopy = content.split(",").map(a => parseInt(a));
+let amplifiers
 const allResults = [];
-let halted = false;
 for (let i = 5; i <= 9; i++) { //0
     for (let j = 5; j <= 9; j++) { //1
         if (j === i) continue;
@@ -74,45 +70,62 @@ for (let i = 5; i <= 9; i++) { //0
                 if (l === i || l === j || l === k) continue;
                 for (let m = 5; m <= 9; m++) { //4
                     if (m === i || m === j || m === k || m === l) continue;
-                    console.log(i, j, k, l, m);
                     const thrusters = [i, j, k, l, m];
-                    ///////////////////////////////////////////////////////////////
-                    let result = 0;
-                    const AmpProgs = {
-                        0: { prog: progCopy, index: 0 },
-                        1: { prog: progCopy, index: 0 },
-                        2: { prog: progCopy, index: 0 },
-                        3: { prog: progCopy, index: 0 },
-                        4: { prog: progCopy, index: 0 }
-                    }
-                    for (let amp = 0; amp <= 4; amp++) {
-                        const { prog, index } = AmpProgs[amp]
-                        const input = [thrusters[amp], result];
-                        const output = intCode(prog, index, input); //{ result: y.pop(), prog, i, halted: true }
-                        result = output.result;
-                        AmpProgs[amp].prog = output.prog;
-                        AmpProgs[amp].index = output.i;
-                       // halted = output.halted;
-                    }
-                   while (!halted) {
-                        for (let amp = 0; amp <= 4; amp++) {
-                            const { prog, index } = AmpProgs[amp]
-                            const input = [ result];
-                            const output = intCode(prog,index, input);
-                            result = output.result;
-                            AmpProgs[amp].prog = output.prog;
-                            AmpProgs[amp].index = output.i;
-                            halted = output.halted;
+                    amplifiers = {
+                        0: {
+                            prog: content.split(",").map(a => parseInt(a)),
+                            index: 0,
+                            input: [thrusters[0], 0],
+                            output: 0
+                        },
+                        1: {
+                            prog: content.split(",").map(a => parseInt(a)),
+                            index: 0,
+                            input: [thrusters[1]],
+                            output: 0
+                        },
+                        2: {
+                            prog: content.split(",").map(a => parseInt(a)),
+                            index: 0,
+                            input: [thrusters[2]],
+                            output: 0
+                        },
+                        3: {
+                            prog: content.split(",").map(a => parseInt(a)),
+                            index: 0,
+                            input: [thrusters[3]],
+                            output: 0
+                        },
+                        4: {
+                            prog: content.split(",").map(a => parseInt(a)),
+                            index: 0,
+                            input: [thrusters[4]],
+                            output: 0
                         }
-                   }
-                    console.log(result)
-                    allResults.push(result);
+                    }
+                    let halted = false;
+                    let output;
+
+                    while (!halted) {
+                        for (let amp = 0; amp <= 4; amp++) {
+                            const { prog, index, input } = amplifiers[amp];
+                            output = intCode(prog, index, input);
+                            amplifiers[amp].prog = output.prog;
+                            amplifiers[amp].index = output.i;
+                            amplifiers[(amp + 1) % 5].input.push(output.result);
+                            if (output.result) {
+                                amplifiers[amp].output = output.result
+                            }
+                        }
+                        halted = output.halted
+                        allResults.push(amplifiers[4].output);
+                    }
+
+                    ///////////////////////////////////////////////////////////////
                 }
             }
         }
     }
 }
 
-console.log('part2-', Math.max(...allResults));
-
-
+console.log('part 2-', Math.max(...allResults));
