@@ -12,20 +12,20 @@ function intCode(prog, inputX) {
         const par3Mode = instruction.slice(-5, -4) || 0;
         const par1 = par1Mode == 2 ? prog[prog[i + 1] + base] : (par1Mode == 1 ? prog[i + 1] : prog[prog[i + 1]]);
         const par2 = par2Mode == 2 ? prog[prog[i + 2] + base] : (par2Mode == 1 ? prog[i + 2] : prog[prog[i + 2]]);
-       // const par3 = par3Mode == 2 ? prog[i + 1] + base : (par2Mode == 1 ? prog[i + 2] : prog[prog[i + 2]]);
+        // const par3 = par3Mode == 2 ? prog[i + 1] + base : (par2Mode == 1 ? prog[i + 2] : prog[prog[i + 2]]);
 
         if (opCode == 1) {
-            prog[par3Mode ==2 ?prog[i + 3] + base : prog[i + 3]] = (par1 + par2) || 0;
+            prog[par3Mode == 2 ? prog[i + 3] + base : prog[i + 3]] = (par1 + par2) || 0;
             i += 4;
         } else if (opCode == 2) {
-            prog[par3Mode ==2 ?prog[i + 3] + base : prog[i + 3]] = (par1 * par2) || 0;
+            prog[par3Mode == 2 ? prog[i + 3] + base : prog[i + 3]] = (par1 * par2) || 0;
             i += 4;
         } else if (opCode == 3) {
             // if (par1Mode == 2) {
             //     prog[par1Modeprog[i + 1] + base] = inputX || 0;
             // } else {
-                prog[par1Mode ==2 ?prog[i + 1] + base : prog[i + 1]] = inputX || 0;
-          //  }
+            prog[par1Mode == 2 ? prog[i + 1] + base : prog[i + 1]] = inputX || 0;
+            //  }
             i += 2;
         } else if (opCode == 4) {
             y.push(par1);
@@ -44,16 +44,16 @@ function intCode(prog, inputX) {
             }
         } else if (opCode == 7) {
             if (par1 < par2) {
-                prog[par3Mode ==2 ?prog[i + 3] + base : prog[i + 3]] = 1;
+                prog[par3Mode == 2 ? prog[i + 3] + base : prog[i + 3]] = 1;
             } else {
-                prog[par3Mode ==2 ?prog[i + 3] + base : prog[i + 3]] = 0;
+                prog[par3Mode == 2 ? prog[i + 3] + base : prog[i + 3]] = 0;
             }
             i += 4;
         } else if (opCode == 8) {
             if (par1 == par2) {
-                prog[par3Mode ==2 ?prog[i + 3] + base : prog[i + 3]] = 1;
+                prog[par3Mode == 2 ? prog[i + 3] + base : prog[i + 3]] = 1;
             } else {
-                prog[par3Mode ==2 ?prog[i + 3] + base : prog[i + 3]] = 0;
+                prog[par3Mode == 2 ? prog[i + 3] + base : prog[i + 3]] = 0;
             }
             i += 4;
         } else if (opCode == 9) {
